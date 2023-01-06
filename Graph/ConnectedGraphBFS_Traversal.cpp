@@ -4,7 +4,6 @@
 #include <queue>
 using namespace std;
 
-//Create  Adjacency List using vector of vector
 void createAdjacencyList(vector<pair<int, int>> &edges, vector<vector<int>> &adjList)
 {
     for (int i = 0; i < edges.size(); i++)
@@ -17,11 +16,9 @@ void createAdjacencyList(vector<pair<int, int>> &edges, vector<vector<int>> &adj
     }
 }
 
-//bfs traversal------------------
-vector<int> bfsForConnectedGraph(vector<vector<int>> &adjList, int V, int s)
+void bfsForConnectedGraph(vector<vector<int>> &adjList, unordered_map<int, bool> &visited, int s)
 {
     vector<int> ans;
-    unordered_map<int, bool> visited;
     queue<int> q;
     q.push(s);
     visited[s] = true;
@@ -39,26 +36,39 @@ vector<int> bfsForConnectedGraph(vector<vector<int>> &adjList, int V, int s)
             }
         }
     }
-    return ans;
-}
-
-int main()
-{
-    int V = 6;  //no. of vertices
-    vector<pair<int, int>> edges = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 0}, {0, 5}, {1, 5}, {2, 5}, {3, 5}, {4, 5}};
-    vector<vector<int>> adjList(V);
-    int s = 0; // source vertex
-
-    // Create Adjacency List----------------
-    createAdjacencyList(edges, adjList);
-
-    vector<int> ans;
-    ans = bfsForConnectedGraph(adjList, V, s);
     // printing bfs---------------------
     for (int i = 0; i < ans.size(); i++)
     {
         cout << ans[i] << " ";
     }
+}
+
+void bsfForDisconnected(vector<vector<int>> &adjList, int V)
+{
+    unordered_map<int, bool> visited;
+    vector<int> part;
+    for (int i = 0; i < V; i++)
+    {
+        if (visited[i] == false)
+            bfsForConnectedGraph(adjList, visited, i);
+    }
+}
+
+int main()
+{
+    int V = 7;
+    vector<pair<int, int>> edges = {{0, 1}, {0, 2}, {1, 3}, {3, 2}, {0, 3}, {1, 2}, {4, 5}, {5, 6}, {4, 6}, {4, 4}};
+    vector<vector<int>> adjList(V);
+    unordered_map<int, bool> visited;
+    int s = 0; // source vertex
+
+    // Create Adjacency List----------------
+    createAdjacencyList(edges, adjList);
+    // If graph is connected
+    // bfsForConnectedGraph(adjList, visited, s);
+
+    // if graph is disconnected------------
+    bsfForDisconnected(adjList, V);
 
     return 0;
 }
